@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="lib\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
+  
+  <PropertyGroup>
+    <Config>Debug</Config>
+  </PropertyGroup>
+
+  <Target Name="Build">
+    <MSBuild Projects="MemPowered.sln" Properties="Configuration=$(Config)"/>
+  </Target>
+
+  <Target Name="Package" DependsOnTargets="Build">
+    <ItemGroup>
+      <MemPoweredFiles
+        Include="MemPowered\bin\$(config)\*.dll"/>
+      <LearnMemPoweredFiles
+        Include="LearnMemPowered\*" />
+      <Scripts
+        Include="scripts\*" />
+    </ItemGroup>
+
+    <MakeDir Directories="tmp" />
+    <MakeDir Directories="tmp\MemPowered" />
+    <MakeDir Directories="tmp\LearnMemPowered" />
+    <Copy SourceFiles="@(MemPoweredFiles)" DestinationFolder="tmp\MemPowered" />
+    <Copy SourceFiles="@(LearnMemPoweredFiles)" DestinationFolder="tmp\LearnMemPowered" />
+    <Copy SourceFiles="@(Scripts)" DestinationFolder="tmp" />
+
+    <ItemGroup>
+      <FilesToZip Include="tmp\**\*" />
+    </ItemGroup>
+
+    <Zip Files="@(FilesToZip)"
+                    WorkingDirectory="tmp"
+                    ZipFileName="MemPowered.zip" 
+                    ContinueOnError="true" />
+
+    <RemoveDir Directories="tmp" />
+  </Target>
+          
+
+</Project>

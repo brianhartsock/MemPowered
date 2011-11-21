@@ -1,0 +1,1 @@
+powershell .\Install.ps1
